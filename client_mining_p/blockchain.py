@@ -13,7 +13,7 @@ class Blockchain(object):
         self.current_transactions = []
 
         # Create the genesis block
-        self.new_block(previous_hash=1, proof=100)
+        self.new_block(previous_hash="=============", proof=100)
 
     def new_block(self, proof, previous_hash=None):
         """
@@ -32,11 +32,11 @@ class Blockchain(object):
         """
 
         block = {
-            'index': len(self.chain) + 1
+            'index': len(self.chain) + 1,
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
-            'previous_hash' = previous_hash or self.hash(self.chain[-1]) 
+            'previous_hash': previous_hash or self.hash(self.chain[-1]) 
         }
 
         # Reset the current list of transactions
@@ -81,20 +81,20 @@ class Blockchain(object):
     def last_block(self):
         return self.chain[-1]
 
-    def proof_of_work(self, block):
-        """
-        Simple Proof of Work Algorithm
-        Stringify the block and look for a proof.
-        Loop through possibilities, checking each one against `valid_proof`
-        in an effort to find a number that is a valid proof
-        :return: A valid proof for the provided block
-        """
-        block_string = json.dumps(self.last_block, sort_keys=True)
-        proof = 0
-        while self.valid_proof(block_string, proof) is False:
-            proof += 1
+    # def proof_of_work(self, block):
+    #     """
+    #     Simple Proof of Work Algorithm
+    #     Stringify the block and look for a proof.
+    #     Loop through possibilities, checking each one against `valid_proof`
+    #     in an effort to find a number that is a valid proof
+    #     :return: A valid proof for the provided block
+    #     """
+    #     block_string = json.dumps(self.last_block, sort_keys=True)
+    #     proof = 0
+    #     while self.valid_proof(block_string, proof) is False:
+    #         proof += 1
         
-        return proof
+    #     return proof
 
     @staticmethod
     def valid_proof(block_string, proof):
@@ -147,6 +147,13 @@ def full_chain():
     }
     return jsonify(response), 200
 
+
+@app.route('/last_block', methods=['GET'])
+def return_last_block():
+    response = {
+        'last_block': blockchain.last_block
+    }
+    return jsonify(response), 200
 
 # Run the program on port 5000
 if __name__ == '__main__':
